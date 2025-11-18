@@ -1,0 +1,66 @@
+/* KCL 대시보드 커스텀 스타일 */
+
+/* 부드러운 애니메이션 */
+* {
+    transition: all 0.3s ease;
+}
+
+/* 카드 호버 효과 */
+.card {
+    border-radius: 8px;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+/* 버튼 스타일 */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* 테이블 스타일 */
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+/* 배지 스타일 */
+.badge {
+    font-weight: normal;
+    padding: 0.4em 0.8em;
+}
+
+/* 폼 컨트롤 */
+.form-control:focus,
+.form-select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+}
+
+/* 로딩 스피너 */
+.loading-spinner {
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* 반응형 조정 */
+@media (max-width: 768px) {
+    .stat-card h3 {
+        font-size: 1.8rem;
+    }
+
+    .display-4 {
+        font-size: 2rem;
+    }
+}

@@ -1,0 +1,32 @@
+{
+  "api_keys": {
+    "github": "",
+    "semantic_scholar": "",
+    "crossref": "",
+    "public_data": ""
+  },
+  "data_dir": "data",
+  "output_dir": "output",
+  "max_results_per_source": 10,
+  "cache_duration_hours": 24,
+  "web_search": {
+    "enabled": true,
+    "max_pages": 5,
+    "timeout": 10
+  },
+  "paper_search": {
+    "enabled": true,
+    "sources": [
+      "semantic_scholar",
+      "crossref",
+      "arxiv"
+    ]
+  },
+  "tech_search": {
+    "enabled": true,
+    "github_min_stars": 10
+  },
+  "api_search": {
+    "enabled": true
+  }
+}

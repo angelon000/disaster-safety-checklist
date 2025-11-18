@@ -1,0 +1,461 @@
+{% extends "base.html" %}
+
+{% block title %}{{ metadata.keyword }} - 체크리스트 결과{% endblock %}
+
+{% block extra_css %}
+<style>
+    .summary-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .summary-stat {
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .summary-stat h3 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .summary-stat small {
+        opacity: 0.9;
+    }
+
+    .category-accordion .accordion-item {
+        border: none;
+        margin-bottom: 1rem;
+        border-radius: 10px !important;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .category-accordion .accordion-button {
+        font-size: 1.1rem;
+        font-weight: bold;
+        background-color: #f8f9fa;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .category-accordion .accordion-button:not(.collapsed) {
+        background: linear-gradient(135deg, var(--kcl-primary), var(--kcl-secondary));
+        color: white;
+    }
+
+    .category-accordion .accordion-button:focus {
+        box-shadow: none;
+        border-color: transparent;
+    }
+
+    .question-card {
+        border-left: 4px solid var(--kcl-primary);
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+        background: white;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .question-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transform: translateX(5px);
+    }
+
+    .importance-badge {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.75rem;
+    }
+
+    .resource-item {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .resource-item:last-child {
+        border-bottom: none;
+    }
+
+    .progress-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .progress-bar-custom {
+        height: 30px;
+        border-radius: 15px;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .action-buttons .btn {
+        min-width: 150px;
+    }
+
+    .category-icon {
+        font-size: 1.5rem;
+        margin-right: 0.5rem;
+    }
+
+    @media print {
+        .action-buttons,
+        .breadcrumb,
+        .accordion-button {
+            display: none;
+        }
+
+        .accordion-collapse {
+            display: block !important;
+            height: auto !important;
+        }
+
+        .question-card {
+            page-break-inside: avoid;
+        }
+    }
+
+    .category-summary {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .category-summary .progress {
+        flex: 1;
+        height: 8px;
+    }
+
+    .badge-new {
+        animation: pulse 2s infinite;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/"><i class="bi bi-house"></i> 홈</a></li>
+        <li class="breadcrumb-item"><a href="/projects">프로젝트</a></li>
+        <li class="breadcrumb-item active">{{ metadata.keyword }}</li>
+    </ol>
+</nav>
+
+<!-- Header Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-5 fw-bold mb-3">
+            <i class="bi bi-file-earmark-check text-success"></i>
+            {{ metadata.keyword }}
+        </h1>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <span class="badge bg-primary" style="font-size: 1rem;">
+                <i class="bi bi-building"></i> {{ metadata.facility_type or metadata.content_type }}
+            </span>
+            <span class="badge bg-info" style="font-size: 1rem;">
+                <i class="bi bi-clipboard-check"></i> {{ metadata.check_phase or metadata.business_stage }}
+            </span>
+            {% if metadata.focus_area %}
+            <span class="badge bg-warning" style="font-size: 1rem;">
+                <i class="bi bi-bullseye"></i> {{ metadata.focus_area }}
+            </span>
+            {% endif %}
+            <span class="badge bg-secondary" style="font-size: 1rem;">
+                <i class="bi bi-calendar"></i> {{ project.created_at[:10] }}
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Card -->
+<div class="summary-card">
+    <div class="row">
+        <div class="col-md-3 summary-stat">
+            <h3>{{ research_summary.web_sources }}</h3>
+            <small><i class="bi bi-globe"></i> 웹 자료</small>
+        </div>
+        <div class="col-md-3 summary-stat">
+            <h3>{{ research_summary.papers }}</h3>
+            <small><i class="bi bi-file-text"></i> 논문</small>
+        </div>
+        <div class="col-md-3 summary-stat">
+            <h3>{{ research_summary.tech_projects }}</h3>
+            <small><i class="bi bi-github"></i> 기술 프로젝트</small>
+        </div>
+        <div class="col-md-3 summary-stat">
+            <h3>{{ research_summary.apis }}</h3>
+            <small><i class="bi bi-plug"></i> API</small>
+        </div>
+    </div>
+</div>
+
+<!-- Progress Section -->
+<div class="progress-section">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h5 class="mb-3">
+                <i class="bi bi-list-check"></i> 체크리스트 진행 상황
+            </h5>
+            <div class="progress progress-bar-custom">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 0%" id="progressBar">
+                    <span id="progressText">0 / {{ total_questions }} 완료</span>
+                </div>
+            </div>
+            <small class="text-muted mt-2 d-block">
+                총 {{ checklist|length }}개 카테고리, {{ total_questions }}개 질문
+            </small>
+        </div>
+        <div class="col-md-4 text-end action-buttons">
+            <a href="/download/{{ project.id }}/markdown" class="btn btn-primary mb-2">
+                <i class="bi bi-file-earmark-text"></i> Markdown
+            </a>
+            <a href="/download/{{ project.id }}/json" class="btn btn-secondary mb-2">
+                <i class="bi bi-filetype-json"></i> JSON
+            </a>
+            <button onclick="window.print()" class="btn btn-outline-dark mb-2">
+                <i class="bi bi-printer"></i> 인쇄
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Checklist Categories (Accordion) -->
+<div class="accordion category-accordion" id="checklistAccordion">
+    {% for category_id, category_data in checklist.items() %}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button {% if loop.index > 1 %}collapsed{% endif %}"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#category{{ loop.index }}"
+                    aria-expanded="{% if loop.index == 1 %}true{% else %}false{% endif %}">
+                <span class="category-icon">{{ category_data.info.icon }}</span>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span>{{ category_data.info.name }}</span>
+                        <small class="ms-3 opacity-75">
+                            {{ category_data.questions|length }}개 질문
+                        </small>
+                    </div>
+                    <small class="d-block mt-1 opacity-75" style="font-size: 0.85rem; font-weight: normal;">
+                        {{ category_data.info.description }}
+                    </small>
+                </div>
+            </button>
+        </h2>
+        <div id="category{{ loop.index }}"
+             class="accordion-collapse collapse {% if loop.index == 1 %}show{% endif %}"
+             data-bs-parent="#checklistAccordion">
+            <div class="accordion-body" style="background: #f8f9fa;">
+                {% for question in category_data.questions %}
+                <div class="question-card">
+                    <!-- Question Header -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h6 class="fw-bold mb-0">
+                            {{ loop.index }}. {{ question.question }}
+                        </h6>
+                        <div>
+                            {% if question.importance == 'high' %}
+                            <span class="badge bg-danger importance-badge">
+                                <i class="bi bi-exclamation-triangle"></i> 중요
+                            </span>
+                            {% elif question.importance == 'medium' %}
+                            <span class="badge bg-warning importance-badge">
+                                <i class="bi bi-info-circle"></i> 보통
+                            </span>
+                            {% else %}
+                            <span class="badge bg-success importance-badge">
+                                <i class="bi bi-check-circle"></i> 낮음
+                            </span>
+                            {% endif %}
+
+                            {% if question.required %}
+                            <span class="badge bg-primary importance-badge">
+                                <i class="bi bi-asterisk"></i> 필수
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Answer Section -->
+                    <div class="mb-3">
+                        {% if question.type == 'select' %}
+                        <div class="form-text mb-2">
+                            <i class="bi bi-ui-checks"></i> 선택지:
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for option in question.options %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="q_{{ category_id }}_{{ loop.index }}"
+                                       id="q_{{ category_id }}_{{ loop.index }}_{{ loop.index0 }}">
+                                <label class="form-check-label"
+                                       for="q_{{ category_id }}_{{ loop.index }}_{{ loop.index0 }}">
+                                    {{ option }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <textarea class="form-control" rows="3"
+                                  placeholder="답변을 입력하세요..."
+                                  aria-label="답변 입력"></textarea>
+                        {% endif %}
+                    </div>
+
+                    <!-- Reference Materials -->
+                    {% if question.related_resources %}
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-muted fw-bold">
+                                <i class="bi bi-bookmark-fill"></i>
+                                참고 자료 ({{ question.related_resources|length }}건)
+                            </small>
+                            <button class="btn btn-sm btn-outline-secondary" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#resources_{{ category_id }}_{{ loop.index }}">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div class="collapse" id="resources_{{ category_id }}_{{ loop.index }}">
+                            <div class="card card-body bg-white">
+                                {% for resource in question.related_resources[:5] %}
+                                <div class="resource-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="me-2">
+                                            {% if resource.type == 'web' %}
+                                            <i class="bi bi-globe text-primary" style="font-size: 1.2rem;"></i>
+                                            {% elif resource.type == 'paper' %}
+                                            <i class="bi bi-file-text text-info" style="font-size: 1.2rem;"></i>
+                                            {% elif resource.type == 'tech' %}
+                                            <i class="bi bi-github text-dark" style="font-size: 1.2rem;"></i>
+                                            {% elif resource.type == 'api' %}
+                                            <i class="bi bi-plug text-success" style="font-size: 1.2rem;"></i>
+                                            {% endif %}
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <a href="{{ resource.url }}" target="_blank"
+                                               class="text-decoration-none fw-bold">
+                                                {{ resource.title or resource.name }}
+                                                <i class="bi bi-box-arrow-up-right small"></i>
+                                            </a>
+                                            {% if resource.source %}
+                                            <br><small class="text-muted">{{ resource.source }}</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Warning for More Research -->
+                    {% if question.needs_more_research %}
+                    <div class="alert alert-warning mt-3 mb-0">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <small>추가 리서치가 필요합니다.</small>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Back to List Button -->
+<div class="text-center mt-5">
+    <a href="/projects" class="btn btn-lg btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> 프로젝트 목록으로 돌아가기
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// 전체 질문 수 계산
+const totalQuestions = {{ total_questions }};
+
+// 진행률 업데이트 함수
+function updateProgress() {
+    const answeredQuestions = document.querySelectorAll('textarea:not(:placeholder-shown), input[type="radio"]:checked').length;
+    const progressPercent = (answeredQuestions / totalQuestions) * 100;
+
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+
+    progressBar.style.width = progressPercent + '%';
+    progressText.textContent = `${answeredQuestions} / ${totalQuestions} 완료`;
+
+    // 진행률에 따라 색상 변경
+    if (progressPercent === 100) {
+        progressBar.classList.remove('bg-warning', 'bg-info');
+        progressBar.classList.add('bg-success');
+    } else if (progressPercent > 50) {
+        progressBar.classList.remove('bg-success', 'bg-info');
+        progressBar.classList.add('bg-warning');
+    } else {
+        progressBar.classList.remove('bg-success', 'bg-warning');
+        progressBar.classList.add('bg-info');
+    }
+
+    // 로컬 스토리지에 저장
+    localStorage.setItem('project_{{ project.id }}_progress', answeredQuestions);
+}
+
+// 답변 입력 시 진행률 업데이트
+document.querySelectorAll('textarea, input[type="radio"]').forEach(element => {
+    element.addEventListener('change', updateProgress);
+    element.addEventListener('input', updateProgress);
+});
+
+// 페이지 로드 시 저장된 진행률 복원
+const savedProgress = localStorage.getItem('project_{{ project.id }}_progress');
+if (savedProgress) {
+    // 진행률 표시만 업데이트
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const progressPercent = (savedProgress / totalQuestions) * 100;
+
+    progressBar.style.width = progressPercent + '%';
+    progressText.textContent = `${savedProgress} / ${totalQuestions} 완료`;
+}
+
+// 아코디언 상태 저장
+const accordionButtons = document.querySelectorAll('.accordion-button');
+accordionButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const target = button.getAttribute('data-bs-target');
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+        // 상태 저장
+        localStorage.setItem(`accordion_${target}`, !isExpanded);
+    });
+});
+
+// 인쇄 전 모든 아코디언 펼치기
+window.addEventListener('beforeprint', () => {
+    document.querySelectorAll('.accordion-collapse').forEach(collapse => {
+        collapse.classList.add('show');
+    });
+});
+
+// 인쇄 후 원래 상태로 복원
+window.addEventListener('afterprint', () => {
+    document.querySelectorAll('.accordion-collapse').forEach((collapse, index) => {
+        if (index > 0) {  // 첫 번째 제외
+            collapse.classList.remove('show');
+        }
+    });
+});
+</script>
+{% endblock %}
