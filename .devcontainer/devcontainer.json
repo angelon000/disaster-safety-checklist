@@ -1,0 +1,33 @@
+{
+  "name": "재난·안전 체크리스트 시스템",
+  "image": "mcr.microsoft.com/devcontainers/python:3.10",
+
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.10"
+    }
+  },
+
+  "postCreateCommand": "pip install -r requirements.txt",
+
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "재난안전 대시보드",
+      "onAutoForward": "notify",
+      "visibility": "public"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  }
+}

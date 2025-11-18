@@ -2,7 +2,26 @@
 
 > 지자체·건설현장·사업장을 위한 재난·안전 맞춤형 체크리스트 자동 생성 시스템
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/angelon000/disaster-safety-checklist/codespaces/new)
+
 ## 🚀 빠른 시작
+
+### ☁️ GitHub Codespaces (가장 빠름!)
+
+**클릭 한 번으로 바로 실행!** 외부 접속 자동 지원 ⚡
+
+[![Open in Codespaces](https://img.shields.io/badge/Open%20in-Codespaces-blue?logo=github)](https://github.com/angelon000/disaster-safety-checklist/codespaces/new)
+
+1. 위 배지 클릭
+2. 1분 대기 (자동 설치)
+3. 터미널에서 `python dashboard/app.py`
+4. 자동 생성된 URL로 접속!
+
+**무료**: 월 60시간 무료 | **HTTPS 자동** | **외부 접속 OK**
+
+자세한 설명: [CODESPACES.md](CODESPACES.md)
+
+---
 
 ### 웹 대시보드 (추천)
 
