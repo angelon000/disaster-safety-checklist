@@ -246,19 +246,26 @@ async def health_check():
 
 if __name__ == "__main__":
     import socket
+    import os
+
+    # 포트는 환경변수에서 가져오기 (클라우드 배포 대응)
+    port = int(os.environ.get("PORT", 8000))
 
     # 로컬 IP 주소 가져오기
-    hostname = socket.gethostname()
-    local_ip = socket.gethostbyname(hostname)
+    try:
+        hostname = socket.gethostname()
+        local_ip = socket.gethostbyname(hostname)
+    except:
+        local_ip = "localhost"
 
     print("\n" + "="*70)
     print("  재난·안전 체크리스트 대시보드")
     print("="*70)
-    print("\n  🌐 로컬 접속: http://localhost:8000")
-    print(f"  🌍 네트워크 접속: http://{local_ip}:8000")
-    print("  📚 API 문서: http://localhost:8000/docs")
-    print("\n  💡 외부 접속을 위해 방화벽 8000번 포트를 열어주세요.")
+    print(f"\n  🌐 로컬 접속: http://localhost:{port}")
+    print(f"  🌍 네트워크 접속: http://{local_ip}:{port}")
+    print(f"  📚 API 문서: http://localhost:{port}/docs")
+    print("\n  💡 외부 접속을 위해 방화벽 포트를 열어주세요.")
     print("  🛑 종료하려면 Ctrl+C를 누르세요.\n")
 
     # 0.0.0.0으로 변경하여 외부 접속 허용
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")

@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: disaster-safety-checklist
+    env: python
+    region: singapore
+    plan: free
+    branch: master
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python dashboard/app.py"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0

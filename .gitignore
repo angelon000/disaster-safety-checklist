@@ -41,6 +41,7 @@ output/
 *.xlsx
 !config/settings.json
 !.devcontainer/devcontainer.json
+!railway.json
 
 # Logs
 *.log

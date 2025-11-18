@@ -23,7 +23,40 @@
 
 ---
 
-### 웹 대시보드 (추천)
+### ☁️ 무료 클라우드 배포 (24/7 실행)
+
+**Codespaces가 닫히는 게 불편하다면?** 항상 켜져있는 무료 서버!
+
+#### 🎯 Render.com (가장 추천!)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/angelon000/disaster-safety-checklist)
+
+1. 위 버튼 클릭
+2. GitHub 계정 연결
+3. **Apply** 클릭
+4. 5분 대기 → 완료!
+
+**무료**: 월 750시간 | **HTTPS 자동** | **GitHub 자동 배포** | **재시작 없음**
+
+#### 🚂 Railway.app (더 빠른 시작)
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/disaster-safety-checklist)
+
+**무료**: 월 $5 크레딧 | 더 빠른 콜드 스타트
+
+#### ⚡ 비교
+
+| 서비스 | 무료 한도 | 콜드 스타트 | 설정 난이도 |
+|--------|----------|------------|-----------|
+| **Render** | 750h/월 | 30초 | ⭐⭐⭐⭐⭐ 매우 쉬움 |
+| **Railway** | $5/월 | 10초 | ⭐⭐⭐⭐⭐ 매우 쉬움 |
+| **Codespaces** | 60h/월 | 즉시 | ⭐⭐⭐⭐ 쉬움 |
+
+📘 자세한 배포 가이드: [RENDER_DEPLOY.md](RENDER_DEPLOY.md)
+
+---
+
+### 웹 대시보드 (로컬 실행)
 
 #### Windows
 ```bash
